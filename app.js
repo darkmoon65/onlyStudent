@@ -5,6 +5,8 @@ import { connect } from "mongoose";
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
 import publicationRouter from "./routes/publication.js";
+import groupRouter from "./routes/group.js";
+
 
 dotenv.config()
 const app = express();
@@ -28,5 +30,7 @@ const start = async () => {
 app.use('/user', userRouter)
 app.use('/auth', authRouter)
 app.use('/publication', publicationRouter)
+app.use('/group', groupRouter)
+
 
 start();
