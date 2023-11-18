@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express, { json } from "express";
 import { connect } from "mongoose";
-
+import cors from 'cors';
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
 import publicationRouter from "./routes/publication.js";
@@ -11,6 +11,7 @@ import groupRouter from "./routes/group.js";
 dotenv.config()
 const app = express();
 app.use(json());
+app.use(cors());
 
 const start = async () => {
   try {
@@ -18,10 +19,9 @@ const start = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("some")
-    app.listen(3000, () => console.log("Server started on port 3000"));
+    app.listen(3200, () => console.log("Server started on port 3200"));
   } catch (error) {
-   console.log("err")
+    console.log("err")
     console.error(error);
     process.exit(1);
   }
