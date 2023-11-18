@@ -11,7 +11,7 @@ class authController {
             const user = await Usuario.findOne({ correo: correo });
 
             if (!user) {
-                req.status(401).json({ error: "Usuario no encontrado" });
+                return res.status(401).json({ error: "Usuario no encontrado" });
             }
 
             if (contrasena != user.contrasena) {
