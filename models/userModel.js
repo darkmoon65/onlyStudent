@@ -1,4 +1,3 @@
-// models/bookModel.js
 import mongoose from 'mongoose';
 
 const esquemaUsuario = new mongoose.Schema({
