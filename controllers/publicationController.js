@@ -2,118 +2,85 @@ import jwt from 'jsonwebtoken';
 import { Publicacion } from '../models/publicationModel.js';
 
 class publicationController {
-    static async createPublication(req, res) {
-        const dataPub = new Publicacion({ ...req.body });
-        const publicacionInsert = await dataPub.save();
-        return res.status(201).json(publicacionInsert);
+  static async createPublication(req, res) {
+    const nuevaPublicacion = new Publicacion({ ...req.body });
+    const publicacionInsertada = await nuevaPublicacion.save();
+    return res.status(201).json(publicacionInsertada);
+  }
+
+  static async getAllPublications(req, res) {
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'No se ha enviado el token' });
+
+    try {
+      jwt.verify(token, process.env.SECRET, async (err) => {
+        if (err) return res.status(403).json({ error: 'Token inválido' });
+      });
+
+      const allPublications = await Publicacion.find();
+      return res.status(200).json(allPublications);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error al obtener las publicaciones' });
     }
+  }
 
-    static async getAllUsers(req, res) {
-        const token = req.headers.authorization.split(' ')[1]
-        if (!token)
-            return res.status(401).json({ error: 'No se ha enviado el token' })
+  static async getPublication(req, res) {
+    const token = req.headers.authorization.split(' ')[1];
 
-        try {
-            jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-                if (err)
-                    return res.status(403).json({ error: 'Token inválido' })
-            })
+    if (!token) return res.status(401).json({ error: 'No se ha enviado el token' });
 
-            const allUsers = await Usuario.find();
-            return res.status(200).json(allUsers);
+    try {
+      jwt.verify(token, process.env.SECRET, async (err) => {
+        if (err) return res.status(403).json({ error: 'Token inválido' });
+      });
 
-        } catch (error) {
-            return res.status(500).json({ error: "Error al actualizar el usuario" });
-        }
+      const publication = await Publicacion.findById(req.params.id);
+      return res.status(200).json(publication);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error al obtener la publicación' });
     }
+  }
 
-    static async getUser(req, res) {
-        const token = req.headers.authorization.split(' ')[1]
+  static async deletePublication(req, res) {
+    const token = req.headers.authorization.split(' ')[1];
+    const { id } = req.params;
 
-        if (!token)
-            return res.status(401).json({ error: 'No se ha enviado el token' })
+    if (!token) return res.status(401).json({ error: 'No se ha enviado el token' });
 
-        try {
-            jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-                if (err)
-                    return res.status(403).json({ error: 'Token inválido' })
-            })
-            const user = await Usuario.findById(req.params.id);
-            return res.status(200).json(user);
-        } catch (error) {
-            return res.status(500).json({ error: "Error al actualizar el usuario" });
-        }
+    try {
+      jwt.verify(token, process.env.SECRET, async (err) => {
+        if (err) return res.status(403).json({ error: 'Token inválido' });
+      });
 
+      const publicacionEliminada = await Publicacion.findByIdAndDelete(id);
+
+      return res.status(200).json(publicacionEliminada);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error al eliminar la publicación' });
     }
+  }
 
-    static async deleteUser(req, res) {
-        const token = req.headers.authorization.split(' ')[1]
-        const { id } = req.params;
+  static async updatePublication(req, res) {
+    const token = req.headers.authorization.split(' ')[1];
+    const { id } = req.params;
+    const updatedPublicationData = req.body;
 
-        if (!token)
-            return res.status(401).json({ error: 'No se ha enviado el token' })
+    if (!token) return res.status(401).json({ error: 'No se ha enviado el token' });
 
-        try {
-            jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-                if (err)
-                    return res.status(403).json({ error: 'Token inválido' })
-            })
+    try {
+      jwt.verify(token, process.env.SECRET, async (err) => {
+        if (err) return res.status(403).json({ error: 'Token inválido' });
 
-            // Recupera el usuario actualizado
-            const usuarioEliminado = await Usuario.findByIdAndDelete(id);
+        await Publicacion.findByIdAndUpdate(id, updatedPublicationData, { new: true });
+      });
 
-            return res.status(200).json(usuarioEliminado);
-        } catch (error) {
-            return res.status(500).json({ error: "Error al actualizar el usuario" });
-        }
+      const updatedPublication = await Publicacion.findById(id);
 
+      return res.status(200).json(updatedPublication);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error al actualizar la publicación' });
     }
-
-    static async updateUser(req, res) {
-        const token = req.headers.authorization.split(' ')[1]
-        const { id } = req.params;
-        const updatedUserData = req.body;
-
-        if (!token)
-            return res.status(401).json({ error: 'No se ha enviado el token' })
-
-        try {
-            jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-                if (err)
-                    return res.status(403).json({ error: 'Token inválido' })
-
-                // Actualiza el usuario en la base de datos
-                await Usuario.updateOne({ _id: id }, updatedUserData);
-            })
-
-            // Recupera el usuario actualizado
-            const updatedUser = await Usuario.findById(id);
-
-            return res.status(200).json(updatedUser);
-        } catch (error) {
-            return res.status(500).json({ error: "Error al actualizar el usuario" });
-        }
-    }
-
-    static async getUsersByName(req, res) {
-        const nombre = req.params.nombre;
-
-        if (!nombre) {
-            return res.status(400).json({ error: "Se debe proporcionar un nombre" });
-        }
-
-        try {
-            const users = await Usuario.find({ nombre: nombre });
-
-            if (users.length === 0) {
-                return res.status(404).json({ error: "No se encontraron usuarios" });
-            }
-
-            return res.status(200).json(users);
-        } catch {
-            res.status(500).json({ error: "Error al buscar usuarios" });
-        }
-    }
+  }
 }
 
 export default publicationController;
