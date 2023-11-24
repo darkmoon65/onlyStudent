@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Usuario } from '../models/userModel.js';
+
 class userController {
     static async createUser(req, res) {
         const nuevoUsuario = new Usuario({ ...req.body });
