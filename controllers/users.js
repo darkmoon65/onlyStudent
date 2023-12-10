@@ -3,8 +3,14 @@ import { Usuario } from '../models/userModel.js';
 class userController {
     static async createUser(req, res) {
         const nuevoUsuario = new Usuario({ ...req.body });
-        const usuarioInsertado = await nuevoUsuario.save();
-        return res.status(201).json(usuarioInsertado);
+        try{
+            const usuarioInsertado = await nuevoUsuario.save();
+            return res.status(201).json(usuarioInsertado);
+        }catch(error){
+            return res.status(500).json({ error: "Error al crear el usuario" });
+        }
+
+       
     }
 
     static async getAllUsers(req, res) {

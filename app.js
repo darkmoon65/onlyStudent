@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
   });
 });
 
+
 // server.listen(4000, () => {
 //   console.log('listening on *:4000');
 // });
@@ -70,6 +71,6 @@ app.use('/user', userRouter)
 app.use('/auth', authRouter)
 app.use('/publication', publicationRouter)
 app.use('/group', groupRouter)
-
+app.use('/uploads', express.static('uploads'));
 
 start();
