@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
 import publicationRouter from "./routes/publication.js";
 import groupRouter from "./routes/group.js";
+import chatRouter from "./routes/chat.js";
 import { Server } from "socket.io";
 import http from "http";
 
@@ -71,6 +72,7 @@ app.use('/user', userRouter)
 app.use('/auth', authRouter)
 app.use('/publication', publicationRouter)
 app.use('/group', groupRouter)
+app.use('/chat', chatRouter)
 app.use('/uploads', express.static('uploads'));
 
 start();

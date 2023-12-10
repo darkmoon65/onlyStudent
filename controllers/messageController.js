@@ -1,4 +1,4 @@
-import { Chat } from '../models/chatModel.js';
+import { Chat } from '../models/messageModel.js';
 
 class messageController {
 
@@ -41,7 +41,7 @@ class messageController {
     const updatedChatData = req.body;
 
     try {
-      await Chat.findByIdAndUpdate(id, updatedChatData, { new: true });
+      await messageModel.findByIdAndUpdate(id, updatedChatData, { new: true });
       const updatedChat = await Chat.findById(id);
       return res.status(200).json(updatedChat);
     } catch (error) {
