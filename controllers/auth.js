@@ -23,7 +23,7 @@ class authController {
             }
 
             const token = 'Bearer ' + jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 * 24 * 30 });
-            res.send({ token, correo: user.correo })
+            res.send({ token, correo: user.correo, id: user.id })
 
         } catch (error) {
             console.log(error);

@@ -101,15 +101,15 @@ class userController {
         }
     }
 
-    static async getUsersByName(req, res) {
-        const nombre = req.params.nombre;
+    static async getUsersByEmail(req, res) {
+        const email = req.params.email;
 
-        if (!nombre) {
+        if (!email) {
             return res.status(400).json({ error: "Se debe proporcionar un nombre" });
         }
 
         try {
-            const users = await Usuario.find({ nombre: nombre });
+            const users = await Usuario.find({ email: email });
 
             if (users.length === 0) {
                 return res.status(404).json({ error: "No se encontraron usuarios" });
